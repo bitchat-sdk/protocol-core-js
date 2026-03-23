@@ -1,0 +1,32 @@
+{
+  "name": "@bitchat/protocol-core",
+  "version": "0.1.0",
+  "description": "BitChat binary protocol encode/decode — packet structs, TLV codec, peer ID utilities",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist", "README.md", "CHANGELOG.md"],
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/tests/*.test.js",
+    "test:fixtures": "node --test dist/tests/fixtures.test.js",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": ["bitchat", "protocol", "mesh", "ble", "p2p", "encryption"],
+  "license": "Unlicense",
+  "repository": { "type": "git", "url": "https://github.com/bitchat-sdk/protocol-core-js.git" },
+  "homepage": "https://github.com/bitchat-sdk/protocol-core-js#readme",
+  "bugs": { "url": "https://github.com/bitchat-sdk/protocol-core-js/issues" },
+  "publishConfig": { "access": "public" },
+  "engines": { "node": ">=18.0.0" },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {}
+}
