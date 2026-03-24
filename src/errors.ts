@@ -1,5 +1,5 @@
 /**
- * Error taxonomy for @bitchat/protocol-core.
+ * Error taxonomy for @bitchat-sdk/protocol-core.
  *
  * All errors extend `BitchatProtocolError` so callers can catch at any granularity.
  */

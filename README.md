@@ -1,4 +1,4 @@
-# @bitchat/protocol-core
+# @bitchat-sdk/protocol-core
 
 BitChat binary protocol encode/decode for Node.js.
 
@@ -9,7 +9,7 @@ structures, and peer ID derivation utilities.
 ## Installation
 
 ```bash
-npm install @bitchat/protocol-core
+npm install @bitchat-sdk/protocol-core
 ```
 
 Requires Node.js 18+.
@@ -26,7 +26,7 @@ import {
   decodeAnnouncement,
   peerIDFromNoiseKey,
   bytesToHex,
-} from '@bitchat/protocol-core';
+} from '@bitchat-sdk/protocol-core';
 
 // Encode a broadcast message
 const packet = {

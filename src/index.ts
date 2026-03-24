@@ -1,10 +1,10 @@
 /**
- * @bitchat/protocol-core
+ * @bitchat-sdk/protocol-core
  *
  * BitChat binary protocol encode/decode for Node.js.
  *
  * ```ts
- * import { encode, decode, MessageType, encodeAnnouncement, decodeAnnouncement } from '@bitchat/protocol-core';
+ * import { encode, decode, MessageType, encodeAnnouncement, decodeAnnouncement } from '@bitchat-sdk/protocol-core';
  * ```
  */
 

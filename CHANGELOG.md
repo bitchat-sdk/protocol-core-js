@@ -1,4 +1,4 @@
-# Changelog — @bitchat/protocol-core
+# Changelog — @bitchat-sdk/protocol-core
 
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 

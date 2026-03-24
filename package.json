@@ -1,5 +1,5 @@
 {
-  "name": "@bitchat/protocol-core",
+  "name": "@bitchat-sdk/protocol-core",
   "version": "0.1.0",
   "description": "BitChat binary protocol encode/decode — packet structs, TLV codec, peer ID utilities",
   "main": "dist/index.js",
