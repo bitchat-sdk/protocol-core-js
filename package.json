@@ -10,7 +10,11 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist", "README.md", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "node --test dist/tests/*.test.js",
@@ -18,15 +22,31 @@
     "lint": "tsc --noEmit",
     "prepublishOnly": "npm run build && npm test"
   },
-  "keywords": ["bitchat", "protocol", "mesh", "ble", "p2p", "encryption"],
+  "keywords": [
+    "bitchat",
+    "protocol",
+    "mesh",
+    "ble",
+    "p2p",
+    "encryption"
+  ],
   "license": "Unlicense",
-  "repository": { "type": "git", "url": "https://github.com/bitchat-sdk/protocol-core-js.git" },
-  "homepage": "https://github.com/bitchat-sdk/protocol-core-js#readme",
-  "bugs": { "url": "https://github.com/bitchat-sdk/protocol-core-js/issues" },
-  "publishConfig": { "access": "public" },
-  "engines": { "node": ">=18.0.0" },
-  "devDependencies": {
-    "typescript": "^5.4.0"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitchat-sdk/protocol-core-js.git"
   },
-  "dependencies": {}
+  "homepage": "https://github.com/bitchat-sdk/protocol-core-js#readme",
+  "bugs": {
+    "url": "https://github.com/bitchat-sdk/protocol-core-js/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^5.4.0"
+  }
 }
