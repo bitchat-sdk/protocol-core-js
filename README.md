@@ -1,5 +1,8 @@
 # @bitchat-sdk/protocol-core
 
+[![npm](https://img.shields.io/npm/v/@bitchat-sdk/protocol-core)](https://www.npmjs.com/package/@bitchat-sdk/protocol-core)
+[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](https://unlicense.org)
+
 BitChat binary protocol encode/decode for Node.js.
 
 Implements the wire format from the BitChat mesh networking protocol:
@@ -153,7 +156,7 @@ This package implements the same binary wire format as:
 - `android/app/src/main/java/com/bitchat/android/services/BinaryProtocol.kt`
 
 Cross-language compatibility is verified by the golden fixture suite in
-`ecosystem/packages/spec-tests/`.
+the [bitchat-sdk](https://github.com/bitchat-sdk) org.
 
 ## Known Limitations
 
