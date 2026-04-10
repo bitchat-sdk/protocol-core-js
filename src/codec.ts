@@ -34,6 +34,7 @@ import {
 import {
   DecompressionError,
   PacketTooShortError,
+  PayloadTooLargeError,
   SuspiciousCompressionRatioError,
   TruncatedFieldError,
   UnsupportedVersionError,
@@ -50,6 +51,7 @@ const RECIPIENT_ID_SIZE = 8;
 const SIGNATURE_SIZE = 64;
 const COMPRESSION_THRESHOLD = 256;
 const MAX_COMPRESSION_RATIO = 50_000;
+const MAX_PAYLOAD_LENGTH = 10_485_760;
 
 function headerSize(version: ProtocolVersion): number {
   return version === 2 ? V2_HEADER_SIZE : V1_HEADER_SIZE;
@@ -294,6 +296,10 @@ async function decodeCoreThrows(raw: Uint8Array): Promise<BitchatPacket> {
   } else {
     payloadLength = readUint16BE(view, offset);
     offset += 2;
+  }
+
+  if (payloadLength > MAX_PAYLOAD_LENGTH) {
+    throw new PayloadTooLargeError(payloadLength, MAX_PAYLOAD_LENGTH);
   }
 
   // SenderID

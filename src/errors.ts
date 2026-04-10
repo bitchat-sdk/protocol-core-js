@@ -51,6 +51,14 @@ export class SuspiciousCompressionRatioError extends BitchatProtocolError {
   }
 }
 
+/** Payload length exceeds the maximum allowed. */
+export class PayloadTooLargeError extends BitchatProtocolError {
+  constructor(length: number, maximum: number) {
+    super(`Payload length ${length} exceeds maximum allowed (${maximum})`);
+    this.name = 'PayloadTooLargeError';
+  }
+}
+
 /** TLV payload could not be decoded. */
 export class TLVDecodeError extends BitchatProtocolError {
   constructor(reason: string) {
