@@ -9,6 +9,16 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ---
 
+## [0.1.2] — 2026-05-05
+
+### Fixed
+- `package.json` `exports` field was missing the `"import"` condition, causing
+  `ERR_PACKAGE_PATH_NOT_EXPORTED` for any ESM consumer (TypeScript+ESM, Vite, Next.js,
+  `"type": "module"` packages). The README quickstart used `import { encode } from
+  '@bitchat-sdk/protocol-core'` but only CJS `require()` actually resolved. Added
+  the missing condition pointing at the same CJS bundle — Node 22's CJS named-export
+  interop handles named imports.
+
 ## [0.1.1] — 2026-04-10
 
 ### Security
@@ -40,6 +50,7 @@ Initial GA release.
 ### Protocol Compatibility
 Wire-format compatible with BitChat iOS (Swift) and BitChat Android (Kotlin) — protocol v1 and v2.
 
-[Unreleased]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/bitchat-sdk/protocol-core-js/releases/tag/v0.1.0
