@@ -155,8 +155,11 @@ This package implements the same binary wire format as:
 - `ios/bitchat/Protocols/BinaryProtocol.swift`
 - `android/app/src/main/java/com/bitchat/android/services/BinaryProtocol.kt`
 
-Cross-language compatibility is verified by the golden fixture suite in
-the [bitchat-sdk](https://github.com/bitchat-sdk) org.
+Cross-language compatibility is verified against the
+[`bitchat-sdk/spec-tests`](https://github.com/bitchat-sdk/spec-tests) golden
+fixture suite. Clone that repo as a sibling of this one, then `npm test`
+runs all cross-language vectors automatically — without it, the fixture
+suite silently skips.
 
 ## Known Limitations
 

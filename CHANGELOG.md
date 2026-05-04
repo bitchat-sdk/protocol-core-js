@@ -9,6 +9,11 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ---
 
+## [0.1.3] — 2026-05-05
+
+### Documentation
+- README now links directly to [`bitchat-sdk/spec-tests`](https://github.com/bitchat-sdk/spec-tests) and explains the sibling-clone setup instead of a vague org reference.
+
 ## [0.1.2] — 2026-05-05
 
 ### Fixed
@@ -50,7 +55,8 @@ Initial GA release.
 ### Protocol Compatibility
 Wire-format compatible with BitChat iOS (Swift) and BitChat Android (Kotlin) — protocol v1 and v2.
 
-[Unreleased]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/bitchat-sdk/protocol-core-js/releases/tag/v0.1.0
