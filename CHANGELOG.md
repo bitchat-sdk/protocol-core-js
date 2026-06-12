@@ -4,6 +4,11 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased] — planned for 0.2.0
 
+### Added
+- `RequestSyncPacket` TLV codec (`encodeRequestSync` / `decodeRequestSync`) — REQUEST_SYNC gossip-sync payloads carrying GCS filter parameters, closing the parity gap with the Swift and Kotlin SDKs. Implements the full iOS surface: required P/M/data plus optional `types`, `sinceTimestamp`, `fragmentIdFilter` TLVs (16-bit big-endian lengths). Decode rejects `p` outside `1..=MAX_P` (32, upstream iOS PR #1331), `m = 0`, and filter data above `MAX_ACCEPT_FILTER_BYTES` (1024, configurable).
+- `SyncTypeFlag` bit constants and `syncTypeFlagsFromMessageTypes` / `syncTypeFlagsToMessageTypes` helpers (mirror `SyncTypeFlags.swift`).
+- 12 cross-language `request_sync` golden vectors in `spec-tests/fixtures/request_sync.json`, asserted byte-for-byte by all four SDK ecosystems; fixture harness extended to dispatch `type: "request_sync"`.
+
 ### Changed
 - `PacketFlags` backward-compat alias removed; use `PacketFlag` (alias was added in 0.1.0, removal planned after one minor version)
 

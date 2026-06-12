@@ -83,6 +83,45 @@ decodePrivateMessage(data: Uint8Array): PrivateMessagePacket | null
 
 The decoder is **strict**: returns `null` on any unknown TLV tag.
 
+### TLV: RequestSyncPacket
+
+REQUEST_SYNC gossip-sync payloads carrying [GCS](https://en.wikipedia.org/wiki/Golomb_coding) filter parameters. Unlike the TLVs above, these use **16-bit big-endian lengths**.
+
+```ts
+encodeRequestSync(packet: RequestSyncPacket): Uint8Array
+decodeRequestSync(data: Uint8Array, maxAcceptBytes?: number): RequestSyncPacket | null
+
+interface RequestSyncPacket {
+  p: number;                  // Golomb-Rice parameter (decode accepts 1..=MAX_P = 32)
+  m: number;                  // hash range M = N * 2^P (uint32)
+  data: Uint8Array;           // GR bitstream bytes (MSB-first)
+  types?: bigint;             // sync-type flags bitmask (see SyncTypeFlag)
+  sinceTimestamp?: bigint;    // only sync packets newer than this (ms, uint64)
+  fragmentIdFilter?: string;  // restrict sync to one fragment ID
+}
+```
+
+```ts
+import { encodeRequestSync, decodeRequestSync, SyncTypeFlag } from '@bitchat-sdk/protocol-core';
+
+const wire = encodeRequestSync({
+  p: 19,
+  m: 1 << 19,
+  data: gcsFilterBytes,
+  types: SyncTypeFlag.Announce | SyncTypeFlag.Message,
+});
+const request = decodeRequestSync(wire); // null on any invalid input
+```
+
+The decoder is **lenient about unknown tags** (forward-compatible — the optional
+`types`/`sinceTimestamp`/`fragmentIdFilter` TLVs are iOS-side extensions that
+older decoders skip) and **strict about validity**: it rejects `p` outside
+`1..=MAX_P` (32), `m = 0`, missing required fields, and filter data larger than
+`maxAcceptBytes` (default `MAX_ACCEPT_FILTER_BYTES` = 1024, a DoS guard).
+
+Helpers: `syncTypeFlagsFromMessageTypes(types)` / `syncTypeFlagsToMessageTypes(flags)`
+convert between `MessageType[]` and the flags bitmask.
+
 ### Peer ID Utilities
 
 ```ts

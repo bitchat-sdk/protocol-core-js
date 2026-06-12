@@ -119,3 +119,25 @@ export interface PrivateMessagePacket {
   /** Message content (UTF-8 string). */
   content: string;
 }
+
+/**
+ * REQUEST_SYNC payload: GCS (Golomb-Coded Set) filter parameters.
+ *
+ * Mirrors RequestSyncPacket.swift (iOS reference). The extended fields
+ * (`types`, `sinceTimestamp`, `fragmentIdFilter`) are iOS-side TLVs;
+ * decoders that don't know them skip them (forward-compatible).
+ */
+export interface RequestSyncPacket {
+  /** Golomb-Rice parameter. Decode accepts 1..=MAX_P (32). */
+  p: number;
+  /** Hash range M = N * 2^P (uint32). */
+  m: number;
+  /** GR bitstream bytes (MSB-first). */
+  data: Uint8Array;
+  /** Sync-type flags bitmask (up to 56 bits — see `SyncTypeFlag`). Optional. */
+  types?: bigint;
+  /** Only sync packets newer than this (ms since Unix epoch, uint64). Optional. */
+  sinceTimestamp?: bigint;
+  /** Restrict sync to a single fragment ID (UTF-8). Optional. */
+  fragmentIdFilter?: string;
+}

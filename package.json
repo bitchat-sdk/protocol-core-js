@@ -13,6 +13,7 @@
   },
   "files": [
     "dist",
+    "!dist/tests",
     "README.md",
     "CHANGELOG.md"
   ],

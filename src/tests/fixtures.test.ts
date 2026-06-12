@@ -18,6 +18,8 @@ import {
   encodeAnnouncement, decodeAnnouncement,
   encodePrivateMessage, decodePrivateMessage,
 } from '../tlv.js';
+import { encodeRequestSync, decodeRequestSync } from '../sync.js';
+import type { AnnouncementPacket, PrivateMessagePacket, RequestSyncPacket } from '../types.js';
 
 const FIXTURES_DIR = resolve(__dirname, '../../../../spec-tests/fixtures');
 
@@ -42,7 +44,7 @@ function isValidHex(s: unknown): s is string {
   return typeof s === 'string' && s.length > 0 && /^[0-9a-f]+$/.test(s) && s.length % 2 === 0;
 }
 
-const TLV_TYPES = new Set(['announcement', 'private_message_tlv']);
+const TLV_TYPES = new Set(['announcement', 'private_message_tlv', 'request_sync']);
 
 const fixtureFiles = [
   'broadcast_message_v1.json',
@@ -50,7 +52,29 @@ const fixtureFiles = [
   'malformed_packets.json',
   'announcement_packet.json',
   'private_message_tlv.json',
+  'request_sync.json',
 ];
+
+function decodeTlvFixture(type: string, bytes: Uint8Array) {
+  switch (type) {
+    case 'announcement': return decodeAnnouncement(bytes);
+    case 'private_message_tlv': return decodePrivateMessage(bytes);
+    case 'request_sync': return decodeRequestSync(bytes);
+    default: throw new Error(`Unknown TLV fixture type: ${type}`);
+  }
+}
+
+function encodeTlvFixture(
+  type: string,
+  decoded: AnnouncementPacket | PrivateMessagePacket | RequestSyncPacket,
+): Uint8Array {
+  switch (type) {
+    case 'announcement': return encodeAnnouncement(decoded as AnnouncementPacket);
+    case 'private_message_tlv': return encodePrivateMessage(decoded as PrivateMessagePacket);
+    case 'request_sync': return encodeRequestSync(decoded as RequestSyncPacket);
+    default: throw new Error(`Unknown TLV fixture type: ${type}`);
+  }
+}
 
 describe('Spec fixture compatibility', () => {
   for (const file of fixtureFiles) {
@@ -75,20 +99,11 @@ describe('Spec fixture compatibility', () => {
 
         if (entry.should_decode) {
           if (isTlvOnly) {
-            if (entry.type === 'announcement') {
-              const decoded = decodeAnnouncement(bytes);
-              assert.ok(decoded, `Expected decodeAnnouncement success for ${entry.id}`);
-              if (!entry.no_roundtrip) {
-                const reEncoded = encodeAnnouncement(decoded);
-                assert.equal(bytesToHex(reEncoded), hex, `Round-trip mismatch for ${entry.id}`);
-              }
-            } else {
-              const decoded = decodePrivateMessage(bytes);
-              assert.ok(decoded, `Expected decodePrivateMessage success for ${entry.id}`);
-              if (!entry.no_roundtrip) {
-                const reEncoded = encodePrivateMessage(decoded);
-                assert.equal(bytesToHex(reEncoded), hex, `Round-trip mismatch for ${entry.id}`);
-              }
+            const decoded = decodeTlvFixture(entry.type, bytes);
+            assert.ok(decoded, `Expected TLV decode success for ${entry.id}`);
+            if (!entry.no_roundtrip) {
+              const reEncoded = encodeTlvFixture(entry.type, decoded);
+              assert.equal(bytesToHex(reEncoded), hex, `Round-trip mismatch for ${entry.id}`);
             }
           } else {
             const decoded = await decode(bytes);
@@ -100,9 +115,7 @@ describe('Spec fixture compatibility', () => {
           }
         } else {
           if (isTlvOnly) {
-            const result = entry.type === 'announcement'
-              ? decodeAnnouncement(bytes)
-              : decodePrivateMessage(bytes);
+            const result = decodeTlvFixture(entry.type, bytes);
             assert.equal(result, null, `Expected decode failure for ${entry.id}`);
           } else {
             const decoded = await decode(bytes);

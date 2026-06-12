@@ -18,6 +18,15 @@ export {
   decodePrivateMessage,
 } from './tlv.js';
 export {
+  MAX_P,
+  MAX_ACCEPT_FILTER_BYTES,
+  SyncTypeFlag,
+  encodeRequestSync,
+  decodeRequestSync,
+  syncTypeFlagsFromMessageTypes,
+  syncTypeFlagsToMessageTypes,
+} from './sync.js';
+export {
   peerIDFromNoiseKey,
   peerIDToBytes,
   peerIDFromBytes,

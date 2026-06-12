@@ -13,7 +13,8 @@ import assert from 'node:assert/strict';
 import { deflateRawSync } from 'node:zlib';
 
 import { encode, decode, hexToBytes } from '../codec.js';
-import { MessageType, type BitchatPacket } from '../types.js';
+import { MessageType, type BitchatPacket, type RequestSyncPacket } from '../types.js';
+import { encodeRequestSync, decodeRequestSync, MAX_P } from '../sync.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -311,6 +312,90 @@ describe('fuzz: edge-case field values', () => {
       const result = await decode(await wire(pkt));
       assert.ok(result, `MessageType.${name} (${type}) should decode`);
       assert.equal(result.type, type);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// RequestSync TLV fuzzing
+// ---------------------------------------------------------------------------
+
+describe('fuzz: RequestSync decoder', () => {
+  for (const seed of [0, 7, 0xfeed]) {
+    it(`random bytes never throw (seed=${seed}, 10k iterations)`, () => {
+      const rng = lcg(seed);
+      for (let i = 0; i < 10_000; i++) {
+        const n = rng.next().value % 257;
+        const data = randBytes(rng, n);
+        try {
+          decodeRequestSync(data);
+        } catch (err) {
+          assert.fail(`decodeRequestSync threw on ${n}-byte input (seed=${seed}, iter=${i}): ${err}`);
+        }
+      }
+    });
+  }
+
+  it('every prefix of a valid encoding never throws', () => {
+    const w = encodeRequestSync({
+      p: 19,
+      m: 1 << 19,
+      data: Uint8Array.of(1, 2, 3, 4, 5),
+      types: 3n,
+      sinceTimestamp: 1_000_000n,
+      fragmentIdFilter: 'frag-01',
+    });
+    for (let i = 0; i < w.length; i++) {
+      try {
+        decodeRequestSync(w.slice(0, i));
+      } catch (err) {
+        assert.fail(`decodeRequestSync threw on prefix length ${i}: ${err}`);
+      }
+    }
+  });
+
+  it('single bit flips never throw', () => {
+    const w = encodeRequestSync({ p: 19, m: 1 << 19, data: randBytes(lcg(5), 64) });
+    for (let byteIdx = 0; byteIdx < w.length; byteIdx++) {
+      for (let bit = 0; bit < 8; bit++) {
+        const flipped = new Uint8Array(w);
+        flipped[byteIdx] ^= 1 << bit;
+        try {
+          decodeRequestSync(flipped);
+        } catch (err) {
+          assert.fail(`decodeRequestSync threw after flipping byte ${byteIdx} bit ${bit}: ${err}`);
+        }
+      }
+    }
+  });
+
+  it('10_000 random packets round-trip without loss', () => {
+    const rng = lcg(0x5eed);
+    for (let i = 0; i < 10_000; i++) {
+      const pkt: RequestSyncPacket = {
+        p: (rng.next().value % MAX_P) + 1,
+        m: (rng.next().value % 0xffff_fffe) + 1,
+        data: randBytes(rng, rng.next().value % 128),
+      };
+      if (rng.next().value % 2) pkt.types = BigInt(rng.next().value & 0xff || 1);
+      if (rng.next().value % 2) pkt.sinceTimestamp = BigInt(rng.next().value) << BigInt(rng.next().value % 32);
+      if (rng.next().value % 2) pkt.fragmentIdFilter = `frag-${rng.next().value % 1000}`;
+
+      const w = encodeRequestSync(pkt);
+      const result = decodeRequestSync(w);
+      assert.ok(result, `decode failed at iteration ${i}`);
+      assert.equal(result.p, pkt.p, `p mismatch at iteration ${i}`);
+      assert.equal(result.m, pkt.m, `m mismatch at iteration ${i}`);
+      assert.deepEqual(result.data, pkt.data, `data mismatch at iteration ${i}`);
+      assert.equal(result.types, pkt.types, `types mismatch at iteration ${i}`);
+      assert.equal(result.sinceTimestamp, pkt.sinceTimestamp, `since mismatch at iteration ${i}`);
+      assert.equal(result.fragmentIdFilter, pkt.fragmentIdFilter, `fragment mismatch at iteration ${i}`);
+    }
+  });
+
+  it('rejects non-integer p on encode', () => {
+    for (const p of [NaN, 3.7, Infinity, -Infinity]) {
+      assert.throws(() => encodeRequestSync({ p, m: 1024, data: Uint8Array.of(0) }));
     }
   });
 });
