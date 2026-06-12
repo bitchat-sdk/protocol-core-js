@@ -2,7 +2,9 @@
 
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased] — planned for 0.2.0
+## [Unreleased]
+
+## [0.2.0] — 2026-06-12
 
 ### Added
 - `RequestSyncPacket` TLV codec (`encodeRequestSync` / `decodeRequestSync`) — REQUEST_SYNC gossip-sync payloads carrying GCS filter parameters, closing the parity gap with the Swift and Kotlin SDKs. Implements the full iOS surface: required P/M/data plus optional `types`, `sinceTimestamp`, `fragmentIdFilter` TLVs (16-bit big-endian lengths). Decode rejects `p` outside `1..=MAX_P` (32, upstream iOS PR #1331), `m = 0`, and filter data above `MAX_ACCEPT_FILTER_BYTES` (1024, configurable).
@@ -60,7 +62,8 @@ Initial GA release.
 ### Protocol Compatibility
 Wire-format compatible with BitChat iOS (Swift) and BitChat Android (Kotlin) — protocol v1 and v2.
 
-[Unreleased]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/bitchat-sdk/protocol-core-js/compare/v0.1.0...v0.1.1
